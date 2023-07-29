@@ -13,6 +13,7 @@ pipeline{
         stage('parallel stages'){
             parallel{
         stage("This is to compile the code"){
+agent{label 'slave1'}
             steps{
                 sh 'mvn compile'
                 recordIssues(tools: [pmdParser()])
@@ -20,6 +21,7 @@ pipeline{
             }
         }
         stage("This is for testing"){
+agent{label 'slave1'}
             steps{
                 sh 'mvn test'
                 echo 'Run Success'
@@ -29,6 +31,7 @@ pipeline{
         }
       
     stage("This is for QA tetsing"){
+agent{label 'slave2'}
             steps{
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
                 sh 'mvn pmd:pmd'
@@ -39,6 +42,7 @@ pipeline{
     
     
     stage("This is to set the package of a code"){
+agent{label 'slave2'}
             steps{
                 sh 'mvn package'
                 echo 'Run Success'
